@@ -1,6 +1,19 @@
 <?php
-require 'function.php';
-require 'ceklogin.php';
+require '../function.php';
+require '../ceklogin.php';
+
+
+//dapetin ID
+$idbarang = $_GET['id'];
+//getinfobarang
+$get = mysqli_query($conn,"select * from barang where idbarang='$idbarang'");
+$fetch = mysqli_fetch_assoc($get);
+//setvariabel
+$namabarang = $fetch['namabarang'];
+$deskripsi = $fetch['deskripsi'];
+$stock = $fetch['stock'];
+$satuan = $fetch['satuan'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +24,7 @@ require 'ceklogin.php';
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Inventory App</title>
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="../css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
@@ -23,7 +36,7 @@ require 'ceklogin.php';
             <!-- Navbar-->
         </nav>
         <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
+        <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
@@ -53,8 +66,7 @@ require 'ceklogin.php';
                                     </a>
                                     <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="login.php">Login</a>
-                                            <a class="nav-link" href="register.html">Tambah User</a>
+                                        <a class="nav-link" href="admin.php">Admin</a>
                                             <a class="nav-link" href="logout.php">Logout</a>
                                         </nav>
                                     </div>
@@ -65,111 +77,99 @@ require 'ceklogin.php';
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">Dashboard</h1>
+                        <h1 class="mt-4">Detail Barang</h1>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
+                            <li class="breadcrumb-item active">Detail</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-header">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                                 Tambah Barang
-                                </button>
+                               <h2> <?=$namabarang;?> </h2>
                             </div>
                             <div class="card-body">
+
+
+
+
+                            <div class="row">
+                                <div class="col-md-3">Deskripsi</div>
+                                <div class="col-md-9">: <?=$deskripsi;?></div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-3">Stock</div>
+                                <div class="col-md-9">: <?=$stock;?></div>
+                            </div>
+
+                                <br><br><hr>
+
+                                <h3>Barang Masuk</h3>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered" id="barangmasuk" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Nama_Barang</th>
-                                                <th>Deskripsi</th>
-                                                <th>Stok</th>
-                                                <th>Aksi</th>
+                                                <th>Tanggal</th>
+                                                <th>Penerima</th>
+                                                <th>Jumlah</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
 
 
                                             <?php
-                                            $ambilsemuadatastock = mysqli_query($conn, "select * from barang");
+                                             $ambildatamasuk = mysqli_query($conn, "select * from masuk  where idbarang='$idbarang'");
                                             $i = 1;
-                                            while($data=mysqli_fetch_array($ambilsemuadatastock)){
-                                                
-                                                
-                                                $namabarang = $data['namabarang'];
-                                                $deskripsi = $data['deskripsi'];
-                                                $stock = $data['stock'];
-                                                $idb = $data['Idbarang'];                                
-                                            
-
+                                             while($fetch = mysqli_fetch_array($ambildatamasuk)){
+                                                 $tanggal = $fetch['tanggalm'];
+                                                 $keterangan = $fetch['keterangan'];
+                                                 $quantity = $fetch['qty'];                               
                                             ?>
                                             <tr>
                                                 <td><?=$i++;?></td>
-                                                <td><?=$namabarang;?></td>
-                                                <td><?=$deskripsi;?></td>
-                                                <td><?=$stock;?></td>
-                                                <td>
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit<?=$idb;?>">
-                                                    Edit
-                                                    </button>
-                                                    <input type="hidden" name="idbarangyangmaudihapus" value="<?=$idb;?>">
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?=$idb;?>">
-                                                        Delete
-                                                        </button>
-                                                </td>
-                                                    
+                                                <td><?=$tanggal;?></td>
+                                                <td><?=$keterangan;?></td>
+                                                <td><?=$quantity;?></td>
                                             </tr>
+                                        <?php
+                                            }
+                                        ?>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                                            <!-- Edit -->
-                                            <div class="modal fade" id="edit<?=$idb;?>">
-                                            <div class="modal-dialog">
-                                            <div class="modal-content">
-                                            
-                                                <!-- Modal Header -->
-                                                <div class="modal-header">
-                                                <h4 class="modal-title">Edit Data</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                </div>
-                                                
-                                                <!-- Modal body -->
-                                                <form method="post">
-                                                <div class="modal-body">
-                                                <input type="text" name="namabarang" value="<?=$namabarang;?>" class="form-control" required>
-                                                <br>
-                                                <input type="text" name="deskripsi" value="<?=$deskripsi;?>" class="form-control" required>
-                                                <br>
-                                                <input type="hidden" name="idb" value="<?=$idb;?>">
-                                                <button type="submit" class="btn btn-primary" name="updatebarang"> Submit </button>
-                                                </div>
-                                                </form>
-                                            </div>
-                                            </div>
-                                        </div>
+                                <br><br>
 
-                                        <!-- Delete -->
-                                        <div class="modal fade" id="delete<?=$idb;?>">
-                                            <div class="modal-dialog">
-                                            <div class="modal-content">
-                                            
-                                                <!-- Modal Header -->
-                                                <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Data</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                </div>
+                                <h3>Barang Keluar</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="barangkeluar" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Tanggal</th>
+                                                <th>Penerima</th>
+                                                <th>Jumlah</th>
                                                 
-                                                <!-- Modal body -->
-                                                <form method="post">
-                                                <div class="modal-body">
-                                                Apakah Anda Yakin Inging Menghapus (<?=$namabarang;?>) ?
-                                                <br>
-                                                <br>
-                                                <input type="hidden" name="idb" value="<?=$idb;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusbarang"> Hapus </button>
-                                                </div>
-                                                </form>
-                                            </div>
-                                            </div>
-                                        </div>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                            <?php
+                                             $ambildatakeluar = mysqli_query($conn, "select * from keluar where idbarang='$idbarang'");
+                                            $i = 1;
+                                             while($fetch = mysqli_fetch_array($ambildatakeluar)){
+                                                 $tanggal = $fetch['tanggalk'];
+                                                 $penerima = $fetch['penerima'];
+                                                 $quantity = $fetch['qty'];                               
+                                            ?>
+                                            <tr>
+                                                <td><?=$i++;?></td>
+                                                <td><?=$tanggal;?></td>
+                                                <td><?=$penerima;?></td>
+                                                <td><?=$quantity;?></td>
+                                            </tr>
                                         <?php
                                             }
                                         ?>
@@ -184,20 +184,20 @@ require 'ceklogin.php';
         </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
+        <script src="../js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="../assets/demo/chart-area-demo.js"></script>
+        <script src="../assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/datatables-demo.js"></script>
+        <script src="../assets/demo/datatables-demo.js"></script>
     </body>
+
     <div class="modal fade" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
+
+    <div class="modal-header">
           <h4 class="modal-title">Tambah Barang</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
@@ -211,6 +211,15 @@ require 'ceklogin.php';
           <br>
           <input type="number" name="stock" class="form-control" placeholder="Stock" required>
           <br>
+          <select name="satuan" class="form-control" >
+            <option selected>Pilih satuan</option>
+            <option value="Buah">Buah</option>
+            <option value="Unit">Unit</option>
+            <option value="Hindu">Meter</option>
+            <option value="Centimeter">Centimeter</option>
+            <option value="Milimeter">Milimeter</option>
+            </select>
+           <br>
           <button type="submit" class="btn btn-primary" name="addnewbarang"> Submit </button>
         </div>
         </form>

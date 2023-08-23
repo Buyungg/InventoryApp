@@ -12,7 +12,7 @@ if (isset($_POST['submit'])) {
 
     if($hitung>0){
         $_SESSION['log'] = 'True';
-        header('location:index.php');
+        header('location:view/index.php');
     } else {
         echo "<script>alert('Woops! Email Atau Password anda Salah.')</script>";
     }
@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
 if(!isset($_SESSION['log'])){
 
 } else {
-    header('location:index.php');
+    header('location:view/index.php');
 }
 
 ?>
